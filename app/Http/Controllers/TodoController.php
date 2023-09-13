@@ -29,15 +29,6 @@ class TodoController extends Controller
         // Update a Todo in the database
     }
 
-    public function search(Request $request)
-    {
-        //Searching functionality
-    }
-
-    public function sort(Request $request)
-    {
-        //Sorting functionality
-    }
     public function destroy(Todo $todo)
     {
         // Delete a Todo from the database
