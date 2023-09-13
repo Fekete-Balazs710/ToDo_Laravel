@@ -14,9 +14,26 @@ class TodoController extends Controller
         return response()->json(['todos' => $todos]);
     }
 
-    public function create()
+    public function store(Request $request): JsonResponse
     {
-        // Show the form to create a new Todo
+        try {
+            $user_id = $request->query('user_id');
+
+            //Create the Todo with the default values
+            $newTodo = new Todo;
+            $newTodo->title = 'Todo Title';
+            $newTodo->description = 'Todo Description';
+            $newTodo->priority = 'High';
+            $newTodo->is_Checked = false;
+            $newTodo->date = now();
+            $newTodo->user_id = $user_id;
+
+            $newTodo->save();
+
+            return response()->json(['message' => 'Todo created successfully', 'todo' => $newTodo]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error creating new todo'], 500);
+        }
     }
 
     public function show(Todo $todo)
