@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description')->nullable();
-            $table->integer('priority')->default(1);
-            $table->boolean('isChecked')->default(false);
-            $table->boolean('isEditing')->default(false);
+            $table->string('priority')->default(1);
+            $table->boolean('is_checked')->default(false);
+            $table->boolean('is_editing')->default(false);
             $table->date('date')->nullable();
             $table->unsignedBigInteger('user_id'); // Connect to a user
             $table->timestamps();
