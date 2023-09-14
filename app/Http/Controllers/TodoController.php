@@ -16,24 +16,28 @@ class TodoController extends Controller
 
     public function store(Request $request): JsonResponse
     {
-        try {
-            $user_id = $request->query('user_id');
+        $validatedData = $request->validate([
+            'title' => 'required|string',
+            'description' => 'required|string',
+            'priority' => 'required|string',
+            'is_checked' => 'boolean',
+            'date' => 'date|nullable',
+            'user_id' => 'required|string',
+        ]);
 
-            //Create the Todo with the default values
-            $newTodo = new Todo;
-            $newTodo->title = 'Todo Title';
-            $newTodo->description = 'Todo Description';
-            $newTodo->priority = 'High';
-            $newTodo->is_Checked = false;
-            $newTodo->date = now();
-            $newTodo->user_id = $user_id;
+        // Create a new Todo instance and assign attributes
+        $newTodo = new Todo;
+        $newTodo->title = $validatedData['title'];
+        $newTodo->description = $validatedData['description'];
+        $newTodo->priority = $validatedData['priority'];
+        $newTodo->is_checked = $validatedData['is_checked'] ?? false;
+        $newTodo->date = $validatedData['date'];
+        $newTodo->user_id = $validatedData['user_id'];
 
-            $newTodo->save();
+        // Save the new Todo to the database
+        $newTodo->save();
 
-            return response()->json(['message' => 'Todo created successfully', 'todo' => $newTodo]);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Error creating new todo'], 500);
-        }
+        return response()->json($newTodo, 201);
     }
 
     public function show(Todo $todo)
