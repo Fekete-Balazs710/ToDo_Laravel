@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\TodoStorePostRequest;
+use App\Http\Requests\{TodoStorePostRequest, TodoUpdateRequest};
 use Illuminate\Http\Request;
 use App\Models\Todo;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
+use Illuminate\Database\Eloquent\Model;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
+
 class TodoController extends Controller
 {
     public function index(): JsonResponse
@@ -36,9 +41,18 @@ class TodoController extends Controller
         // Show a single Todo
     }
 
-    public function update(Request $request, Todo $todo)
+    public function update(TodoUpdateRequest $request, Todo $todo): JsonResponse
     {
-        // Update a Todo in the database
+        $validatedData = $request->validated();
+
+        $todo->update([
+            'title' => $validatedData['title'],
+            'description' => $validatedData['description'],
+            'priority' => $validatedData['priority'],
+            'is_checked' => $validatedData['is_checked']
+        ]);
+
+        return response()->json($todo, 200);
     }
 
     public function destroy(Todo $todo)
