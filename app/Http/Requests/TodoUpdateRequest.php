@@ -27,8 +27,7 @@ class TodoUpdateRequest extends FormRequest
             'description' => ['string', 'nullable'],
             'priority' => ['string'],
             'is_checked' => ['boolean'],
-            'date' => ['date', 'nullable'],
-            'id' => ['string']
+            'date' => ['date', 'nullable']
         ];
     }
 }

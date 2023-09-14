@@ -41,11 +41,9 @@ class TodoController extends Controller
         // Show a single Todo
     }
 
-    public function update(TodoUpdateRequest $request, String $id): JsonResponse
+    public function update(TodoUpdateRequest $request, Todo $todo): JsonResponse
     {
         $validatedData = $request->validated();
-
-        $todo = Todo::findOrFail($id);
 
         $todo->update([
             'title' => $validatedData['title'],
@@ -54,7 +52,7 @@ class TodoController extends Controller
             'is_checked' => $validatedData['is_checked']
         ]);
 
-        return response()->json($todo, 201);
+        return response()->json($todo, 200);
     }
 
     public function destroy(Todo $todo)
