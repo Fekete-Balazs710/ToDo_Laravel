@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TodoStorePostRequest;
 use Illuminate\Http\Request;
 use App\Models\Todo;
 use Illuminate\Http\JsonResponse;
@@ -14,30 +15,20 @@ class TodoController extends Controller
         return response()->json(['todos' => $todos]);
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(TodoStorePostRequest $request): JsonResponse
     {
-        $validatedData = $request->validate([
-            'title' => 'required|string',
-            'description' => 'required|string',
-            'priority' => 'required|string',
-            'is_checked' => 'boolean',
-            'date' => 'date|nullable',
-            'user_id' => 'required|string',
+        $validatedData = $request->validated();
+
+        $todo = Todo::create([
+            'title' => $validatedData['title'],
+            'description' => $validatedData['description'],
+            'priority' => $validatedData['priority'],
+            'is_checked' => $validatedData['is_checked'] ?? false,
+            'date' => $validatedData['date'],
+            'user_id' => $validatedData['user_id'],
         ]);
 
-        // Create a new Todo instance and assign attributes
-        $newTodo = new Todo;
-        $newTodo->title = $validatedData['title'];
-        $newTodo->description = $validatedData['description'];
-        $newTodo->priority = $validatedData['priority'];
-        $newTodo->is_checked = $validatedData['is_checked'] ?? false;
-        $newTodo->date = $validatedData['date'];
-        $newTodo->user_id = $validatedData['user_id'];
-
-        // Save the new Todo to the database
-        $newTodo->save();
-
-        return response()->json($newTodo, 201);
+        return response()->json($todo, 201);
     }
 
     public function show(Todo $todo)
