@@ -17,15 +17,35 @@ class TodoController extends Controller
     {
         $sortBy = $request->query('sort_by', 'title');
         $sortOrder = $request->query('sort_order', 'asc');
+        $searchQuery = $request->query('search_query', '');
 
         $validSortColumns = ['title', 'description', 'date', 'priority'];
         if (!in_array($sortBy, $validSortColumns) || !in_array($sortOrder, ['asc', 'desc'])) {
             return response()->json(['error' => 'Invalid sort parameters'], 400);
         }
 
-        $todos = Todo::query()
-            ->orderBy($sortBy, $sortOrder)
-            ->get();
+        $query = Todo::query();
+
+        if ($sortBy === 'priority') {
+            $priorityMap = ['low' => 1, 'medium' => 2, 'high' => 3];
+
+            if ($sortOrder !== 'asc') {
+                $priorityMap = array_reverse($priorityMap);
+            }
+            $priorityOrder = implode("', '", array_keys($priorityMap));
+            $query->orderByRaw("FIELD(priority, '$priorityOrder')");
+        } else {
+            $query->orderBy($sortBy, $sortOrder);
+        }
+
+        if (!empty($searchQuery)) {
+            $query->where(function ($subQuery) use ($searchQuery) {
+                $subQuery->where('title', 'like', "%$searchQuery%")
+                    ->orWhere('description', 'like', "%$searchQuery%");
+            });
+        }
+
+        $todos = $query->get();
 
         return response()->json(['todos' => $todos]);
     }
