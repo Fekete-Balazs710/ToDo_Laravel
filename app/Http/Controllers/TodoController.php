@@ -13,10 +13,20 @@ use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class TodoController extends Controller
 {
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        // Retrieve all Todos and display them
-        $todos = Todo::all();
+        $sortBy = $request->query('sort_by', 'title');
+        $sortOrder = $request->query('sort_order', 'asc');
+
+        $validSortColumns = ['title', 'description', 'date', 'priority'];
+        if (!in_array($sortBy, $validSortColumns) || !in_array($sortOrder, ['asc', 'desc'])) {
+            return response()->json(['error' => 'Invalid sort parameters'], 400);
+        }
+
+        $todos = Todo::query()
+            ->orderBy($sortBy, $sortOrder)
+            ->get();
+
         return response()->json(['todos' => $todos]);
     }
 
