@@ -1,0 +1,5 @@
+/vendor/
+/vendor/composer/
+/vendor
+/.idea/
+composer.*
