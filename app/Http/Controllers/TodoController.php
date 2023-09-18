@@ -55,6 +55,15 @@ class TodoController extends Controller
         return response()->json($todo, 200);
     }
 
+    public function updateIsChecked (Todo $todo): JsonResponse
+    {
+        $todo->update([
+            'is_checked' => !$todo->is_checked
+        ]);
+
+        return response()->json($todo, 200);
+    }
+
     public function destroy(Todo $todo): JsonResponse
     {
         $todo->delete();

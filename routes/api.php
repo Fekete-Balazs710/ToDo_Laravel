@@ -17,6 +17,8 @@ use App\Http\Controllers\TodoController;
 
 Route::resource('todos', TodoController::class);
 
+Route::patch('/todos/update-is-checked/{todo}', [TodoController::class, 'updateIsChecked']);
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
