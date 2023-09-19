@@ -18,6 +18,9 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
 
+    'apiversion' => env('API_VERSION', 'v1'),
+
+    'v1' => 'api/v1',
     /*
     |--------------------------------------------------------------------------
     | Application Environment
@@ -55,7 +58,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => env('APP_URL', 'http://localhost') . '/api/v1',
 
     'asset_url' => env('ASSET_URL'),
 
@@ -168,6 +171,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\FortifyServiceProvider::class
     ])->toArray(),
 
     /*
