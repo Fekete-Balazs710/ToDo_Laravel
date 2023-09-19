@@ -16,7 +16,15 @@ class TodoController extends Controller
 {
     public function index(): JsonResponse
     {
+<<<<<<< feature/ITL-9
         $todos = QueryBuilder::for(Todo::class)
+=======
+        $user = $request->user();
+        $searchQuery = $request->input('filter');
+
+        $todos = QueryBuilder::for(Todo::class)
+            ->where('user_id', $user->id)
+>>>>>>> ITL-10 Implement Laravel API Token Authentication
             ->defaultSort('date')
             ->allowedSorts([
                 'title',
@@ -28,6 +36,15 @@ class TodoController extends Controller
                 'title',
                 'description',
             ])
+<<<<<<< feature/ITL-9
+=======
+            ->where(function ($query) use ($searchQuery) {
+                if ($searchQuery) {
+                    $query->where('title', 'like', '%' . $searchQuery . '%')
+                        ->orWhere('description', 'like', '%' . $searchQuery . '%');
+                }
+            })
+>>>>>>> ITL-10 Implement Laravel API Token Authentication
             ->get();
 
         return response()->json(['todos' => $todos]);
