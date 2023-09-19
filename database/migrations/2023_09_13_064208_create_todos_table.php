@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description')->nullable();
-            $table->string('priority')->default("High");
+            $table->enum('priority', ['Low', 'Medium', 'High'])->default('High');
             $table->boolean('is_checked')->default(false);
             $table->boolean('is_editing')->default(false);
             $table->date('date')->nullable();

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Spatie\QueryBuilder\QueryBuilder;
 use App\Http\Requests\{TodoStorePostRequest, TodoUpdateRequest};
 use Illuminate\Http\Request;
 use App\Models\Todo;
@@ -13,18 +14,20 @@ use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class TodoController extends Controller
 {
-    public function index(Request $request): JsonResponse
+    public function index(): JsonResponse
     {
-        $sortBy = $request->query('sort_by', 'title');
-        $sortOrder = $request->query('sort_order', 'asc');
-
-        $validSortColumns = ['title', 'description', 'date', 'priority'];
-        if (!in_array($sortBy, $validSortColumns) || !in_array($sortOrder, ['asc', 'desc'])) {
-            return response()->json(['error' => 'Invalid sort parameters'], 400);
-        }
-
-        $todos = Todo::query()
-            ->orderBy($sortBy, $sortOrder)
+        $todos = QueryBuilder::for(Todo::class)
+            ->defaultSort('date')
+            ->allowedSorts([
+                'title',
+                'description',
+                'priority',
+                'date',
+            ])
+            ->allowedFilters([
+                'title',
+                'description',
+            ])
             ->get();
 
         return response()->json(['todos' => $todos]);
